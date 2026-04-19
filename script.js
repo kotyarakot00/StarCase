@@ -654,40 +654,28 @@ function setSort(sortType) {
 }
 
 // ========== ЗАЩИТА ОТ КОНСОЛИ ==========
-// Замораживаем основные объекты, чтобы их нельзя было изменить через консоль
+// Замораживаем массивы (но не глубоко, чтобы не ломать игру)
 Object.freeze(itemsDB);
 Object.freeze(casesDB);
-Object.freeze(translations);
 
-// Переопределяем localStorage, чтобы нельзя было напрямую изменять данные
+// Скрываем gameData от консоли
+Object.defineProperty(window, 'gameData', {
+    get: function() { return null; },
+    set: function() { console.warn('%c❌ Доступ к gameData запрещён!', 'color: #ff0000;'); }
+});
+
+// Защита от изменения localStorage через консоль (облегчённая версия)
 const originalSetItem = localStorage.setItem;
-const originalGetItem = localStorage.getItem;
 localStorage.setItem = function(key, value) {
-    if (key === 'boxGame' && !window._allowSave) {
-        console.warn('❌ Защита: изменение сохранения через консоль заблокировано!');
+    const stack = new Error().stack;
+    if (stack && stack.includes('console')) {
+        console.warn('%c❌ Изменение сохранения через консоль заблокировано!', 'color: #ff0000;');
         return;
     }
     originalSetItem.call(localStorage, key, value);
 };
 
-// Удаляем доступ к gameData из консоли
-Object.defineProperty(window, 'gameData', {
-    get: function() { return null; },
-    set: function() { console.warn('❌ Доступ к gameData запрещён'); }
-});
-
-// Блокируем вызов функций через консоль
-const protectedFunctions = ['saveMiscData', 'saveAndUpdate', 'addItem', 'removeItem', 'setCoins'];
-protectedFunctions.forEach(funcName => {
-    if (window[funcName]) {
-        Object.defineProperty(window, funcName, {
-            get: function() { return null; },
-            set: function() { console.warn(`❌ Функция ${funcName} заблокирована`); }
-        });
-    }
-});
-
-console.log('%c🔒 Защита активирована! Манипуляции через консоль заблокированы.', 'color: #ff0000; font-size: 16px; font-weight: bold;');
+console.log('%c🔒 Защита активирована! Попытки читерства через консоль будут блокироваться.', 'color: #00ff00; font-size: 14px; font-weight: bold;');
 
 document.addEventListener('DOMContentLoaded', () => {
     updateUI();
