@@ -413,67 +413,67 @@ button {
 /* ========== ТОЛЬКО ДЛЯ ТЕЛЕФОНОВ ========== */
 @media (max-width: 650px) {
     .cases-grid, .inventory-grid {
-        gap: 10px;
+        gap: 12px;
     }
     
     .case-card, .item-card {
-        width: 110px;
-        padding: 8px;
+        width: 130px;
+        padding: 10px;
     }
     
     .case-card {
-        padding: 8px;
+        padding: 10px;
     }
     
     .item-card {
-        min-height: 180px;
-        padding: 8px;
+        min-height: 200px;
+        padding: 10px;
     }
     
     .case-name {
-        font-size: 11px;
+        font-size: 13px;
     }
     
     .case-price {
-        font-size: 10px;
-        padding: 2px 8px;
+        font-size: 11px;
+        padding: 3px 10px;
     }
     
     .info-icon, .lock-icon {
-        width: 20px;
-        height: 20px;
+        width: 22px;
+        height: 22px;
         font-size: 11px;
-        top: 5px;
+        top: 6px;
     }
     
     .info-icon {
-        left: 5px;
+        left: 6px;
     }
     
     .lock-icon {
-        right: 5px;
+        right: 6px;
     }
     
     .item-emoji {
-        font-size: 32px;
-        margin: 4px 0;
+        font-size: 40px;
+        margin: 5px 0;
     }
     
     .item-name {
-        font-size: 10px;
+        font-size: 11px;
     }
     
     .item-count {
-        font-size: 12px;
+        font-size: 13px;
     }
     
     .item-price {
-        font-size: 9px;
+        font-size: 10px;
     }
     
     .sell-btn {
-        font-size: 10px;
-        padding: 6px 0;
+        font-size: 11px;
+        padding: 7px 0;
         margin-top: 8px;
     }
     
@@ -518,18 +518,22 @@ button {
 
 @media (max-width: 450px) {
     .case-card, .item-card {
-        width: 100px;
+        width: 120px;
+    }
+    
+    .item-card {
+        min-height: 190px;
     }
     
     .case-name {
-        font-size: 10px;
+        font-size: 12px;
     }
     
     .item-emoji {
-        font-size: 28px;
+        font-size: 36px;
     }
     
     .item-name {
-        font-size: 9px;
+        font-size: 10px;
     }
 }
