@@ -413,64 +413,99 @@ button {
 /* ========== АДАПТИВ ДЛЯ ТЕЛЕФОНОВ ========== */
 @media (max-width: 768px) {
     .container {
-        padding: 15px;
-    }
-    
-    .header {
-        flex-direction: row;
-        padding: 12px 20px;
-    }
-    
-    .coins {
-        font-size: 20px;
-        padding: 5px 15px;
-    }
-    
-    .lang-btn, .settings-btn {
-        font-size: 20px;
-        padding: 6px 12px;
-        min-width: 45px;
-    }
-    
-    .cases-grid, .inventory-grid {
-        gap: 12px;
-        justify-content: center;
-    }
-    
-    .case-card, .item-card {
-        width: 140px;
-    }
-    
-    .case-card {
         padding: 12px;
     }
     
-    .item-card {
-        min-height: 220px;
+    .cases-grid, .inventory-grid {
+        gap: 10px;
+    }
+    
+    .case-card, .item-card {
+        width: calc(33.33% - 10px);
+        min-width: 100px;
+    }
+    
+    .case-card {
         padding: 10px;
     }
     
+    .item-card {
+        padding: 8px;
+        min-height: 200px;
+    }
+    
     .case-name {
-        font-size: 16px;
+        font-size: 12px;
+    }
+    
+    .case-price {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+    
+    .info-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        top: 5px;
+        left: 5px;
     }
     
     .item-emoji {
-        font-size: 48px;
+        font-size: 36px;
+        margin: 4px 0;
     }
     
     .item-name {
-        font-size: 13px;
+        font-size: 11px;
+    }
+    
+    .item-count, .item-price {
+        font-size: 10px;
+    }
+    
+    .sell-btn {
+        font-size: 10px;
+        padding: 6px 0;
+        margin-top: 8px;
+    }
+    
+    .lock-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        top: 5px;
+        right: 5px;
+    }
+    
+    .header {
+        padding: 10px 15px;
+    }
+    
+    .coins {
+        font-size: 18px;
+        padding: 5px 12px;
+    }
+    
+    .lang-btn, .settings-btn {
+        font-size: 18px;
+        padding: 5px 10px;
+        min-width: 40px;
+    }
+    
+    h2 {
+        font-size: 18px;
+        margin: 15px 0 10px 0;
     }
     
     .inventory-header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 10px;
     }
     
     .inventory-controls {
-        width: 100%;
-        justify-content: space-between;
+        justify-content: stretch;
     }
     
     .search-input {
@@ -478,115 +513,20 @@ button {
     }
     
     .filter-btn {
-        width: 25%;
-    }
-    
-    .modal-content {
-        width: 95%;
-        margin: 20% auto;
-        padding: 20px;
+        width: 28%;
     }
 }
 
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
-    }
-    
-    .container {
-        padding: 10px;
-    }
-    
-    .header {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-    }
-    
-    .header-buttons {
-        justify-content: center;
-    }
-    
-    .coins {
-        font-size: 18px;
-    }
-    
+@media (max-width: 550px) {
     .case-card, .item-card {
-        width: 130px;
+        width: calc(50% - 10px);
+        min-width: 120px;
     }
-    
-    .case-card {
-        padding: 10px;
-    }
-    
-    .item-card {
-        min-height: 210px;
-    }
-    
-    .case-name {
-        font-size: 14px;
-    }
-    
-    .case-price {
-        font-size: 12px;
-        padding: 3px 8px;
-    }
-    
-    .item-emoji {
-        font-size: 42px;
-    }
-    
-    .item-name {
-        font-size: 12px;
-    }
-    
-    .item-count, .item-price {
-        font-size: 11px;
-    }
-    
-    .sell-btn {
-        font-size: 12px;
-        padding: 8px 0;
-    }
-    
-    .lock-icon {
-        width: 22px;
-        height: 22px;
-        font-size: 12px;
-    }
-    
-    .info-icon {
-        width: 22px;
-        height: 22px;
-        font-size: 12px;
-    }
-    
-    h2 {
-        font-size: 20px;
-        margin: 15px 0 10px 0;
-    }
-    
-    .search-input {
-        font-size: 12px;
-        padding: 6px 10px;
-    }
-    
-    .filter-btn {
-        font-size: 14px;
-        padding: 6px 12px;
-    }
-    
-    .modal-content h3 {
-        font-size: 18px;
-    }
-    
-    .chance-item {
-        font-size: 13px;
-        padding: 8px 10px;
-    }
-    
-    .chance-percent {
-        font-size: 11px;
-        padding: 3px 8px;
+}
+
+@media (max-width: 380px) {
+    .case-card, .item-card {
+        width: calc(100% - 10px);
+        min-width: auto;
     }
 }
