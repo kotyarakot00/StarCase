@@ -105,7 +105,7 @@ h2 {
     flex-wrap: wrap;
     gap: 20px;
     margin-bottom: 30px;
-    justify-content: center;
+    justify-content: flex-start;
 }
 .case-card {
     background: white;
@@ -410,32 +410,34 @@ button {
     transform: scale(1.02);
 }
 
-/* ========== ТОЛЬКО ДЛЯ ТЕЛЕФОНОВ ========== */
-@media (max-width: 650px) {
+/* ========== ТОЛЬКО ДЛЯ ТЕЛЕФОНОВ - 2 КАРТОЧКИ В РЯД ========== */
+@media (max-width: 700px) {
     .cases-grid, .inventory-grid {
         gap: 12px;
+        justify-content: center;
     }
     
     .case-card, .item-card {
-        width: 130px;
-        padding: 10px;
+        width: calc(50% - 12px);
+        max-width: 180px;
+        min-width: 140px;
     }
     
     .case-card {
-        padding: 10px;
+        padding: 12px;
     }
     
     .item-card {
-        min-height: 200px;
         padding: 10px;
+        min-height: auto;
     }
     
     .case-name {
-        font-size: 13px;
+        font-size: 14px;
     }
     
     .case-price {
-        font-size: 11px;
+        font-size: 12px;
         padding: 3px 10px;
     }
     
@@ -455,12 +457,12 @@ button {
     }
     
     .item-emoji {
-        font-size: 40px;
+        font-size: 42px;
         margin: 5px 0;
     }
     
     .item-name {
-        font-size: 11px;
+        font-size: 12px;
     }
     
     .item-count {
@@ -518,22 +520,14 @@ button {
 
 @media (max-width: 450px) {
     .case-card, .item-card {
-        width: 120px;
-    }
-    
-    .item-card {
-        min-height: 190px;
-    }
-    
-    .case-name {
-        font-size: 12px;
+        min-width: 130px;
     }
     
     .item-emoji {
         font-size: 36px;
     }
     
-    .item-name {
-        font-size: 10px;
+    .case-name {
+        font-size: 12px;
     }
 }
