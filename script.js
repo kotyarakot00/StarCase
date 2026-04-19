@@ -653,30 +653,6 @@ function setSort(sortType) {
     closeFilterModal();
 }
 
-// ========== ЗАЩИТА ОТ КОНСОЛИ ==========
-// Замораживаем массивы (но не глубоко, чтобы не ломать игру)
-Object.freeze(itemsDB);
-Object.freeze(casesDB);
-
-// Скрываем gameData от консоли
-Object.defineProperty(window, 'gameData', {
-    get: function() { return null; },
-    set: function() { console.warn('%c❌ Доступ к gameData запрещён!', 'color: #ff0000;'); }
-});
-
-// Защита от изменения localStorage через консоль (облегчённая версия)
-const originalSetItem = localStorage.setItem;
-localStorage.setItem = function(key, value) {
-    const stack = new Error().stack;
-    if (stack && stack.includes('console')) {
-        console.warn('%c❌ Изменение сохранения через консоль заблокировано!', 'color: #ff0000;');
-        return;
-    }
-    originalSetItem.call(localStorage, key, value);
-};
-
-console.log('%c🔒 Защита активирована! Попытки читерства через консоль будут блокироваться.', 'color: #00ff00; font-size: 14px; font-weight: bold;');
-
 document.addEventListener('DOMContentLoaded', () => {
     updateUI();
     
