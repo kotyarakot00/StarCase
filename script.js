@@ -653,6 +653,42 @@ function setSort(sortType) {
     closeFilterModal();
 }
 
+// ========== ЗАЩИТА ОТ КОНСОЛИ ==========
+// Замораживаем основные объекты, чтобы их нельзя было изменить через консоль
+Object.freeze(itemsDB);
+Object.freeze(casesDB);
+Object.freeze(translations);
+
+// Переопределяем localStorage, чтобы нельзя было напрямую изменять данные
+const originalSetItem = localStorage.setItem;
+const originalGetItem = localStorage.getItem;
+localStorage.setItem = function(key, value) {
+    if (key === 'boxGame' && !window._allowSave) {
+        console.warn('❌ Защита: изменение сохранения через консоль заблокировано!');
+        return;
+    }
+    originalSetItem.call(localStorage, key, value);
+};
+
+// Удаляем доступ к gameData из консоли
+Object.defineProperty(window, 'gameData', {
+    get: function() { return null; },
+    set: function() { console.warn('❌ Доступ к gameData запрещён'); }
+});
+
+// Блокируем вызов функций через консоль
+const protectedFunctions = ['saveMiscData', 'saveAndUpdate', 'addItem', 'removeItem', 'setCoins'];
+protectedFunctions.forEach(funcName => {
+    if (window[funcName]) {
+        Object.defineProperty(window, funcName, {
+            get: function() { return null; },
+            set: function() { console.warn(`❌ Функция ${funcName} заблокирована`); }
+        });
+    }
+});
+
+console.log('%c🔒 Защита активирована! Манипуляции через консоль заблокированы.', 'color: #ff0000; font-size: 16px; font-weight: bold;');
+
 document.addEventListener('DOMContentLoaded', () => {
     updateUI();
     
