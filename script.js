@@ -87,16 +87,6 @@ const itemsDB = [
 // ========== КЕЙСЫ ==========
 const casesDB = [
     { 
-        id: 1000,
-        nameRu: "Млечный Путь",
-        nameEn: "Milky Way",
-        price: 0, 
-        type: "free",
-        items: [
-            { itemId: 20, percent: 100 }
-        ]
-    },
-    { 
         id: 1001,
         nameRu: "Ежедневный Ящик",
         nameEn: "Daily Crate",
@@ -252,7 +242,7 @@ const casesDB = [
 ];
 
 // ========== СОСТОЯНИЕ ==========
-let gameData = { coins: 250, inventory: [], lockedItems: [] };
+let gameData = { coins: 500, inventory: [], lockedItems: [] };
 let resetCount = 0;
 let lastResetDate = "";
 let lastDailyOpen = "";
@@ -403,7 +393,7 @@ async function openCaseWithAnimation(caseItem, cardElement) {
 
     isOpening = true;
     if (cardElement) cardElement.classList.add('opening');
-    await new Promise(r => setTimeout(r, 0)); /////////////////////////////////////////////////////////////////////////////// было 600
+    await new Promise(r => setTimeout(r, 600));
 
     if (caseItem.type !== "free" && caseItem.type !== "daily") {
         gameData.coins -= caseItem.price;
