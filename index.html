@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⭐StarCase⭐</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="coins">💰 <span id="coinDisplay">0</span></div>
+            <div class="header-buttons">
+                <button id="languageBtn" class="lang-btn">🇷🇺</button>
+                <button id="settingsBtn" class="settings-btn">⚙️</button>
+            </div>
+        </div>
+        <div class="shop">
+            <h2 id="shopTitle">Магазин</h2>
+            <div id="casesShop" class="cases-grid"></div>
+        </div>
+        <div class="inventory-header">
+            <h2 id="inventoryTitle">Инвентарь</h2>
+            <div class="inventory-controls">
+                <input type="text" id="searchInput" placeholder="🔍 Поиск..." class="search-input">
+                <button id="filterBtn" class="filter-btn">🔽</button>
+            </div>
+        </div>
+        <div class="inventory">
+            <div id="inventoryList" class="inventory-grid"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно настроек -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeSettings">&times;</span>
+            <h3 id="settingsTitle">Настройки</h3>
+            <button id="resetBtnModal" class="reset-modal-btn"><span id="resetBtnText">🔄 Сбросить весь прогресс</span></button>
+        </div>
+    </div>
+
+    <!-- Модальное окно шансов -->
+    <div id="chancesModal" class="modal">
+        <div class="modal-content chances-content">
+            <span class="close-modal" id="closeChances">&times;</span>
+            <h3 id="chancesTitle">Шансы выпадения</h3>
+            <div id="chancesList" class="chances-list"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно выбора языка -->
+    <div id="languageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeLanguage">&times;</span>
+            <h3 id="languageModalTitle">Выберите язык / Select language</h3>
+            <div class="language-options">
+                <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                <button class="lang-option" data-lang="en">🇺🇸 English</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно фильтрации -->
+    <div id="filterModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeFilter">&times;</span>
+            <h3 id="filterTitle">Сортировка инвентаря</h3>
+            <div class="filter-options">
+                <button class="filter-option" data-sort="price-desc">💰 От дорогих к дешёвым</button>
+                <button class="filter-option" data-sort="price-asc">💰 От дешёвых к дорогим</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
