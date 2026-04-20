@@ -4,57 +4,41 @@ const translations = {
         shopTitle: "Магазин",
         inventoryTitle: "Инвентарь",
         settingsTitle: "Настройки",
-        resetBtnText: "🔄 Сбросить весь прогресс",
+        resetBtnText: "🔄 Сбросить прогресс ({used}/{total})",
         chancesTitle: "Шансы выпадения",
         languageModalTitle: "Выберите язык",
         free: "БЕСПЛАТНО",
         sell: "Продать",
         sellLabel: "продажа",
-        emptyInventory: "🧸 Инвентарь пуст. Открой кейс!",
+        emptyInventory: "🧸 Инвентарь пуст. Открой ящик!",
         searchPlaceholder: "🔍 Поиск...",
         filterTitle: "Сортировка инвентаря",
         filterPriceDesc: "💰 От дорогих к дешёвым",
         filterPriceAsc: "💰 От дешёвых к дорогим",
-        notEnoughCoins: "❌ Не хватает монет! Нужно {price}",
-        waitAnimation: "⏳ Подожди, анимация открытия!",
         resetConfirm: "Сбросить весь прогресс? Все предметы и монеты исчезнут. Останется 500 монет.",
-        resetDone: "✨ Прогресс сброшен. Начинай заново!",
-        resetLimit: "❌ Лимит сбросов на сегодня (5/5). Завтра новый лимит.",
-        dailyLimit: "📅 Вы уже открыли ежедневный ящик сегодня! Следующий будет доступен через:",
-        dailyAvailable: "📅 Ежедневный ящик доступен!",
-        freeCase: "Подарок",
-        woodenCase: "Деревянный ящик",
-        ironChest: "Железный сундук",
-        goldenCrate: "Золотой контейнер",
-        rarity: { common: "Обычный", rare: "Редкий", epic: "Эпический", legendary: "Легендарный", exotic: "Экзотический", secret: "Секретный" }
+        resetLimit: "❌ Лимит сбросов на сегодня ({used}/{total}). Завтра будет новый лимит.",
+        dailyLimit: "📅 Ежедневный ящик уже открыт! Следующий через:",
+        timer: "⏱️ {h}ч {m}м {s}с"
     },
     en: {
         shopTitle: "Shop",
         inventoryTitle: "Inventory",
         settingsTitle: "Settings",
-        resetBtnText: "🔄 Reset all progress",
+        resetBtnText: "🔄 Reset progress ({used}/{total})",
         chancesTitle: "Drop chances",
         languageModalTitle: "Select language",
         free: "FREE",
         sell: "Sell",
         sellLabel: "sell price",
-        emptyInventory: "🧸 Inventory is empty. Open a case!",
+        emptyInventory: "🧸 Inventory is empty. Open a crate!",
         searchPlaceholder: "🔍 Search...",
         filterTitle: "Sort inventory",
         filterPriceDesc: "💰 Most expensive first",
         filterPriceAsc: "💰 Cheapest first",
-        notEnoughCoins: "❌ Not enough coins! Need {price}",
-        waitAnimation: "⏳ Wait, opening animation!",
         resetConfirm: "Reset all progress? All items and coins will disappear. You'll have 500 coins.",
-        resetDone: "✨ Progress reset. Start over!",
-        resetLimit: "❌ Reset limit for today (5/5). Try tomorrow.",
-        dailyLimit: "📅 You've already opened the daily crate today! Next available in:",
-        dailyAvailable: "📅 Daily crate is available!",
-        freeCase: "Present",
-        woodenCase: "Wooden Case",
-        ironChest: "Iron Chest",
-        goldenCrate: "Golden Crate",
-        rarity: { common: "Common", rare: "Rare", epic: "Epic", legendary: "Legendary", exotic: "Exotic", secret: "Secret" }
+        resetLimit: "❌ Reset limit for today ({used}/{total}). Try tomorrow.",
+        dailyLimit: "📅 Daily crate already opened! Next available in:",
+        timer: "⏱️ {h}h {m}m {s}s"
     }
 };
 
@@ -63,6 +47,7 @@ let currentSort = 'price-desc';
 let searchQuery = '';
 
 // ========== БАЗА ПРЕДМЕТОВ ==========
+// Редкости: common, rare, epic, legendary, exotic, secret
 const itemsDB = [
     { id: 1, nameRu: "Паутина", nameEn: "Spider Web", rarity: "common", sell_price: 5, emoji: "🕸️" },
     { id: 2, nameRu: "Скрепка", nameEn: "Paperclip", rarity: "common", sell_price: 10, emoji: "📎" },
@@ -84,129 +69,135 @@ const itemsDB = [
     { id: 18, nameRu: "Унитаз", nameEn: "Toilet", rarity: "legendary", sell_price: 5000, emoji: "🚽" },
     { id: 19, nameRu: "Череп", nameEn: "Skull", rarity: "legendary", sell_price: 10000, emoji: "💀" },
     { id: 20, nameRu: "Млечный Путь", nameEn: "Milky Way", rarity: "exotic", sell_price: 100000, emoji: "🌌" },
+    { id: 21, nameRu: "Звезда", nameEn: "Star", rarity: "exotic", sell_price: 8000, emoji: "⭐" },
 ];
 
 // ========== КЕЙСЫ ==========
+// Параметры:
+//   id - уникальный номер
+//   price - цена (0 = бесплатно)
+//   cooldown - время ожидания в миллисекундах
 const casesDB = [
     { 
         id: 1001,
-        nameRu: "Ежедневный Ящик",
+        nameRu: "Ежедневный ящик",
         nameEn: "Daily Crate",
-        price: 0, 
-        type: "daily",
+        price: 0,
+        emoji: "📅",
+        cooldown: 86400000, // 24 часа в миллисекундах
         items: [
             { itemId: 8, percent: 30 },
             { itemId: 9, percent: 25 },
             { itemId: 10, percent: 20 },
             { itemId: 11, percent: 15 },
             { itemId: 12, percent: 8 },
-            { itemId: 14, percent: 2 }
+            { itemId: 14, percent: 3 }
         ]
     },
     { 
         id: 1002,
         nameRu: "Подарок",
         nameEn: "Present",
-        price: 0, 
-        type: "free",
+        price: 0,
+        emoji: "🎁",
         items: [
             { itemId: 1, percent: 35 },
             { itemId: 2, percent: 35 },
             { itemId: 3, percent: 20 },
             { itemId: 5, percent: 8 },
-            { itemId: 6, percent: 2 }
+            { itemId: 6, percent: 3 }
         ]
     },
     { 
         id: 1003,
-        nameRu: "Деревянный Ящик",
+        nameRu: "Деревянный ящик",
         nameEn: "Wooden Crate",
-        price: 100, 
-        type: "paid",
+        price: 100,
+        emoji: "📦",
         items: [
             { itemId: 4, percent: 30 },
             { itemId: 5, percent: 25 },
             { itemId: 6, percent: 20 },
             { itemId: 7, percent: 15 },
             { itemId: 8, percent: 10 },
-            { itemId: 9, percent: 7 }
+            { itemId: 9, percent: 8 }
         ]
     },
     { 
         id: 1004,
-        nameRu: "Железный Ящик",
+        nameRu: "Железный ящик",
         nameEn: "Iron Crate",
-        price: 350, 
-        type: "paid",
+        price: 350,
+        emoji: "📦",
         items: [
             { itemId: 6, percent: 25 },
             { itemId: 7, percent: 20 },
             { itemId: 8, percent: 15 },
             { itemId: 9, percent: 15 },
             { itemId: 10, percent: 15 },
-            { itemId: 11, percent: 15 }
+            { itemId: 11, percent: 14 }
         ]
     },
     { 
         id: 1005,
-        nameRu: "Золотой Ящик",
+        nameRu: "Золотой ящик",
         nameEn: "Golden Crate",
-        price: 650, 
-        type: "paid",
+        price: 650,
+        emoji: "📦",
         items: [
             { itemId: 9, percent: 30 },
             { itemId: 11, percent: 20 },
             { itemId: 12, percent: 15 },
             { itemId: 13, percent: 10 },
-            { itemId: 14, percent: 3 }
+            { itemId: 14, percent: 7 }
         ]
     },
     { 
         id: 1006,
-        nameRu: "Алмазный Ящик",
+        nameRu: "Алмазный ящик",
         nameEn: "Diamond Crate",
-        price: 1550, 
-        type: "paid",
+        price: 1550,
+        emoji: "📦",
         items: [
             { itemId: 12, percent: 30 },
             { itemId: 13, percent: 20 },
             { itemId: 14, percent: 15 },
-            { itemId: 15, percent: 5 },
-            { itemId: 16, percent: 4 }
+            { itemId: 15, percent: 9 },
+            { itemId: 16, percent: 6 }
         ]
     },
     { 
         id: 1007,
-        nameRu: "Платиновый Ящик",
+        nameRu: "Платиновый ящик",
         nameEn: "Platinum Crate",
-        price: 2550, 
-        type: "paid",
+        price: 2550,
+        emoji: "📦",
         items: [
             { itemId: 14, percent: 30 },
             { itemId: 15, percent: 20 },
             { itemId: 16, percent: 15 },
-            { itemId: 17, percent: 5 },
-            { itemId: 18, percent: 4 }
+            { itemId: 17, percent: 9 },
+            { itemId: 18, percent: 7 }
         ]
     },
     { 
         id: 1008,
-        nameRu: "Мемный Ящик",
+        nameRu: "Мемный ящик",
         nameEn: "Meme Crate",
-        price: 1337, 
-        type: "paid",
+        price: 1337,
+        emoji: "📦",
         items: [
             { itemId: 11, percent: 35 },
             { itemId: 16, percent: 17 },
-            { itemId: 18, percent: 3 }
+            { itemId: 18, percent: 5 }
         ]
     },
     { 
         id: 1009,
-        nameRu: "Королевский Ящик",
+        nameRu: "Королевский ящик",
         nameEn: "Royal Crate",
-        price: 4000, 
-        type: "paid",
+        price: 4000,
+        emoji: "📦",
         items: [
             { itemId: 1, percent: 1 },
             { itemId: 2, percent: 1 },
@@ -227,18 +218,36 @@ const casesDB = [
             { itemId: 17, percent: 1 },
             { itemId: 18, percent: 1 },
             { itemId: 19, percent: 1 },
-            { itemId: 20, percent: 0.1 }
+            { itemId: 20, percent: 0.3 }
         ]
     },
     { 
         id: 1010,
-        nameRu: "Ящик 'Всё или Ничего'",
-        nameEn: "Crate 'All or Nothing'",
-        price: 5000, 
-        type: "paid",
+        nameRu: "Ящик 'Всё или ничего'",
+        nameEn: "All or Nothing Crate",
+        price: 5000,
+        emoji: "📦",
         items: [
-            { itemId: 1, percent: 98 },
-            { itemId: 20, percent: 2 }
+            { itemId: 1, percent: 97 },
+            { itemId: 20, percent: 3 }
+        ]
+    }
+    { 
+        id: 1011,
+        nameRu: "Ящик 'Релиз'",
+        nameEn: "Release Crate",
+        price: 1000,
+        emoji: "✨",
+        items: [
+            { itemId: 4, percent: 23 },
+            { itemId: 6, percent: 22 },
+            { itemId: 8, percent: 19 },
+            { itemId: 10, percent: 16 },
+            { itemId: 12, percent: 14 },
+            { itemId: 14, percent: 10 },
+            { itemId: 16, percent: 5 },
+            { itemId: 18, percent: 3 },
+            { itemId: 21, percent: 1.5 }
         ]
     }
 ];
@@ -303,7 +312,15 @@ function getCaseName(caseItem) {
 }
 
 function getRarityName(rarityKey) {
-    return t(`rarity.${rarityKey}`);
+    const rarityNames = {
+        common: currentLang === 'ru' ? "Обычный" : "Common",
+        rare: currentLang === 'ru' ? "Редкий" : "Rare",
+        epic: currentLang === 'ru' ? "Эпический" : "Epic",
+        legendary: currentLang === 'ru' ? "Легендарный" : "Legendary",
+        exotic: currentLang === 'ru' ? "Экзотический" : "Exotic",
+        secret: currentLang === 'ru' ? "Секретный" : "Secret"
+    };
+    return rarityNames[rarityKey] || rarityKey;
 }
 
 function getRandomItemFromCase(caseItem) {
@@ -385,60 +402,29 @@ function showChancesModal(caseItem) {
     modal.style.display = 'block';
 }
 
-async function openCaseWithAnimation(caseItem, cardElement) {
-    if (isOpening) return;
-    
-    if (caseItem.type === "daily") {
-        const today = new Date().toDateString();
-        if (lastDailyOpen === today) {
-            const remaining = getTimeRemaining();
-            alert(`${t('dailyLimit')}\n${remaining}`);
-            return;
-        }
-        lastDailyOpen = today;
-        saveMiscData();
-    }
-    
-    if (caseItem.type !== "free" && caseItem.type !== "daily" && gameData.coins < caseItem.price) return;
-
-    isOpening = true;
-    if (cardElement) cardElement.classList.add('opening');
-    await new Promise(r => setTimeout(r, 600));
-
-    if (caseItem.type !== "free" && caseItem.type !== "daily") {
-        gameData.coins -= caseItem.price;
-    }
-
-    const wonItem = getRandomItemFromCase(caseItem);
-    gameData.inventory.push(wonItem.id);
-    saveAndUpdate();
-
-    if (cardElement) cardElement.classList.remove('opening');
-    isOpening = false;
-}
-
 function getTimeRemaining() {
+    if (!lastDailyOpen) return null;
+    const lastOpen = new Date(lastDailyOpen);
+    const nextOpen = new Date(lastOpen.getTime() + 86400000);
     const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
     
-    const diff = tomorrow - now;
+    if (now >= nextOpen) return null;
+    
+    const diff = nextOpen - now;
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
     
-    return `${hours}ч ${minutes}м ${seconds}с`;
+    return { hours, minutes, seconds };
 }
 
 function updateDailyTimer() {
-    const dailyCase = casesDB.find(c => c.type === 'daily');
+    const dailyCase = casesDB.find(c => c.cooldown !== undefined);
     if (!dailyCase) return;
     
-    const today = new Date().toDateString();
-    const isAvailable = lastDailyOpen !== today;
+    const remaining = getTimeRemaining();
+    const isAvailable = !remaining;
     
-    // Обновляем отображение на карточке ежедневного ящика
     const container = document.getElementById('casesShop');
     if (container) {
         const cards = container.children;
@@ -450,9 +436,10 @@ function updateDailyTimer() {
                     if (isAvailable) {
                         priceDiv.innerHTML = `🎁 ${t('free')}`;
                         priceDiv.style.background = '#2c2c2c';
+                        priceDiv.style.fontSize = '12px';
+                        priceDiv.style.padding = '4px 12px';
                     } else {
-                        const remaining = getTimeRemaining();
-                        priceDiv.innerHTML = `⏱️ ${remaining}`;
+                        priceDiv.innerHTML = t('timer', { h: remaining.hours, m: remaining.minutes, s: remaining.seconds });
                         priceDiv.style.background = '#555';
                         priceDiv.style.fontSize = '11px';
                         priceDiv.style.padding = '4px 6px';
@@ -464,13 +451,47 @@ function updateDailyTimer() {
     }
 }
 
+async function openCaseWithAnimation(caseItem, cardElement) {
+    if (isOpening) return;
+    
+    // Проверка для ящика (где есть cooldown)
+    if (caseItem.cooldown) {
+        const remaining = getTimeRemaining();
+        if (remaining) {
+            alert(`${t('dailyLimit')}\n${t('timer', { h: remaining.hours, m: remaining.minutes, s: remaining.seconds })}`);
+            return;
+        }
+        lastDailyOpen = new Date().toISOString();
+        saveMiscData();
+    }
+    
+    if (caseItem.price > 0 && gameData.coins < caseItem.price) return;
+
+    isOpening = true;
+    if (cardElement) cardElement.classList.add('opening');
+    await new Promise(r => setTimeout(r, 600));
+
+    if (caseItem.price > 0) {
+        gameData.coins -= caseItem.price;
+    }
+
+    const wonItem = getRandomItemFromCase(caseItem);
+    gameData.inventory.push(wonItem.id);
+    saveAndUpdate();
+
+    if (cardElement) cardElement.classList.remove('opening');
+    isOpening = false;
+}
+
 function renderCases() {
     const container = document.getElementById('casesShop');
     if (!container) return;
     container.innerHTML = '';
     for (let c of casesDB) {
         const card = document.createElement('div');
-        card.className = `case-card ${c.type === 'free' || c.type === 'daily' ? 'free-case' : ''}`;
+        card.className = 'case-card';
+        if (c.price === 0 && !c.cooldown) card.classList.add('free-case');
+        if (c.cooldown) card.classList.add('free-case');
         card.style.position = 'relative';
         card.style.display = 'flex';
         card.style.flexDirection = 'column';
@@ -485,26 +506,20 @@ function renderCases() {
             showChancesModal(c);
         };
         
-        const emoji = c.type === 'free' ? '🎁' : (c.type === 'daily' ? '📅' : '📦');
-        
         const topDiv = document.createElement('div');
         topDiv.style.flex = '1';
-        topDiv.innerHTML = `<div style="font-size: 64px;">${emoji}</div><div class="case-name">${getCaseName(c)}</div>`;
+        topDiv.innerHTML = `<div style="font-size: 64px;">${c.emoji || '📦'}</div><div class="case-name">${getCaseName(c)}</div>`;
         
         let priceHtml;
-        if (c.price === 0) {
-            if (c.type === 'daily') {
-                const today = new Date().toDateString();
-                const isAvailable = lastDailyOpen !== today;
-                if (isAvailable) {
-                    priceHtml = `<div class="case-price" style="margin-top: auto;">🎁 ${t('free')}</div>`;
-                } else {
-                    const remaining = getTimeRemaining();
-                    priceHtml = `<div class="case-price" style="margin-top: auto; background: #555; font-size: 11px; padding: 4px 6px;">⏱️ ${remaining}</div>`;
-                }
+        if (c.cooldown) {
+            const remaining = getTimeRemaining();
+            if (!remaining) {
+                priceHtml = `<div class="case-price" style="margin-top: auto;">🎁 ${t('free')}</div>`;
             } else {
-                priceHtml = `<div class="case-price" style="margin-top: auto;">🎁 0</div>`;
+                priceHtml = `<div class="case-price" style="margin-top: auto; background: #555; font-size: 11px; padding: 4px 6px;">${t('timer', { h: remaining.hours, m: remaining.minutes, s: remaining.seconds })}</div>`;
             }
+        } else if (c.price === 0) {
+            priceHtml = `<div class="case-price" style="margin-top: auto;">🎁 0</div>`;
         } else {
             priceHtml = `<div class="case-price" style="margin-top: auto;">💰 ${c.price}</div>`;
         }
@@ -519,16 +534,11 @@ function renderCases() {
         container.appendChild(card);
     }
     
-    // Запускаем таймер, который обновляет отображение каждую секунду
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(() => {
-        const dailyCase = casesDB.find(c => c.type === 'daily');
-        if (dailyCase) {
-            const today = new Date().toDateString();
-            const isAvailable = lastDailyOpen !== today;
-            if (!isAvailable) {
-                updateDailyTimer();
-            }
+        const dailyCase = casesDB.find(c => c.cooldown);
+        if (dailyCase && getTimeRemaining()) {
+            updateDailyTimer();
         }
     }, 1000);
 }
@@ -650,7 +660,7 @@ function updateUI() {
     document.getElementById('shopTitle').innerText = t('shopTitle');
     document.getElementById('inventoryTitle').innerText = t('inventoryTitle');
     document.getElementById('settingsTitle').innerText = t('settingsTitle');
-    document.getElementById('resetBtnText').innerHTML = t('resetBtnText');
+    document.getElementById('resetBtnText').innerHTML = t('resetBtnText', { used: resetCount, total: 5 });
     document.getElementById('languageModalTitle').innerText = t('languageModalTitle');
     document.getElementById('filterTitle').innerText = t('filterTitle');
     
@@ -671,7 +681,7 @@ function updateUI() {
     const resetBtnModal = document.getElementById('resetBtnModal');
     if (resetBtnModal) {
         resetBtnModal.disabled = !canResetToday();
-        resetBtnModal.title = canResetToday() ? `Осталось сбросов: ${5 - resetCount}` : `Лимит на сегодня (5/5)`;
+        resetBtnModal.title = t('resetLimit', { used: resetCount, total: 5 });
     }
 }
 
@@ -688,7 +698,7 @@ function canResetToday() {
 
 function resetGame() {
     if (!canResetToday()) {
-        alert(t('resetLimit'));
+        alert(t('resetLimit', { used: resetCount, total: 5 }));
         return false;
     }
     if (confirm(t('resetConfirm'))) {
