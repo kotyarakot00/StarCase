@@ -69,7 +69,7 @@ const itemsDB = [
     { id: 18, nameRu: "Унитаз", nameEn: "Toilet", rarity: "legendary", sell_price: 5000, emoji: "🚽" },
     { id: 19, nameRu: "Череп", nameEn: "Skull", rarity: "legendary", sell_price: 10000, emoji: "💀" },
     { id: 20, nameRu: "Млечный Путь", nameEn: "Milky Way", rarity: "exotic", sell_price: 100000, emoji: "🌌" },
-    { id: 21, nameRu: "Звезда", nameEn: "Star", rarity: "exotic", sell_price: 8000, emoji: "⭐" },
+    { id: 21, nameRu: "Звезда", nameEn: "Star", rarity: "exotic", sell_price: 8000, emoji: "⭐" }
 ];
 
 // ========== КЕЙСЫ ==========
