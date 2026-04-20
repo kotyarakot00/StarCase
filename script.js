@@ -231,7 +231,7 @@ const casesDB = [
             { itemId: 1, percent: 97 },
             { itemId: 20, percent: 3 }
         ]
-    }
+    },
     { 
         id: 1011,
         nameRu: "Ящик 'Релиз'",
