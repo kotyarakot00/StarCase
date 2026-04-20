@@ -20,12 +20,13 @@ const translations = {
         resetConfirm: "Сбросить весь прогресс? Все предметы и монеты исчезнут. Останется 500 монет.",
         resetDone: "✨ Прогресс сброшен. Начинай заново!",
         resetLimit: "❌ Лимит сбросов на сегодня (5/5). Завтра новый лимит.",
-        dailyLimit: "📅 Вы уже открыли ежедневный ящик сегодня! Завтра будет новый.",
+        dailyLimit: "📅 Вы уже открыли ежедневный ящик сегодня! Следующий будет доступен через:",
+        dailyAvailable: "📅 Ежедневный ящик доступен!",
         freeCase: "Подарок",
         woodenCase: "Деревянный ящик",
         ironChest: "Железный сундук",
         goldenCrate: "Золотой контейнер",
-        rarity: { common: "Обычный", rare: "Редкий", epic: "Эпический", legendary: "Легендарный", exotic: "Экзотический" }
+        rarity: { common: "Обычный", rare: "Редкий", epic: "Эпический", legendary: "Легендарный", exotic: "Экзотический", secret: "Секретный" }
     },
     en: {
         shopTitle: "Shop",
@@ -47,12 +48,13 @@ const translations = {
         resetConfirm: "Reset all progress? All items and coins will disappear. You'll have 500 coins.",
         resetDone: "✨ Progress reset. Start over!",
         resetLimit: "❌ Reset limit for today (5/5). Try tomorrow.",
-        dailyLimit: "📅 You've already opened the daily crate today! Come back tomorrow.",
+        dailyLimit: "📅 You've already opened the daily crate today! Next available in:",
+        dailyAvailable: "📅 Daily crate is available!",
         freeCase: "Present",
         woodenCase: "Wooden Case",
         ironChest: "Iron Chest",
         goldenCrate: "Golden Crate",
-        rarity: { common: "Common", rare: "Rare", epic: "Epic", legendary: "Legendary", exotic: "Exotic" }
+        rarity: { common: "Common", rare: "Rare", epic: "Epic", legendary: "Legendary", exotic: "Exotic", secret: "Secret" }
     }
 };
 
@@ -247,6 +249,7 @@ let resetCount = 0;
 let lastResetDate = "";
 let lastDailyOpen = "";
 let isOpening = false;
+let timerInterval = null;
 
 const saved = localStorage.getItem('boxGame');
 if (saved) {
@@ -352,6 +355,8 @@ function showChancesModal(caseItem) {
         let rarityColor;
         if (ch.rarity === 'exotic') {
             rarityColor = 'rainbow';
+        } else if (ch.rarity === 'secret') {
+            rarityColor = 'black';
         } else {
             rarityColor = {
                 common: '#9e9e9e',
@@ -364,6 +369,10 @@ function showChancesModal(caseItem) {
         div.className = 'chance-item';
         if (rarityColor === 'rainbow') {
             div.classList.add('rainbow-border');
+        } else if (rarityColor === 'black') {
+            div.style.borderLeftColor = '#000000';
+            div.style.background = '#1a1a1a';
+            div.style.color = '#ffffff';
         } else {
             div.style.borderLeftColor = rarityColor;
         }
@@ -382,7 +391,8 @@ async function openCaseWithAnimation(caseItem, cardElement) {
     if (caseItem.type === "daily") {
         const today = new Date().toDateString();
         if (lastDailyOpen === today) {
-            alert(t('dailyLimit'));
+            const remaining = getTimeRemaining();
+            alert(`${t('dailyLimit')}\n${remaining}`);
             return;
         }
         lastDailyOpen = today;
@@ -405,6 +415,53 @@ async function openCaseWithAnimation(caseItem, cardElement) {
 
     if (cardElement) cardElement.classList.remove('opening');
     isOpening = false;
+}
+
+function getTimeRemaining() {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const diff = tomorrow - now;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    return `${hours}ч ${minutes}м ${seconds}с`;
+}
+
+function updateDailyTimer() {
+    const dailyCase = casesDB.find(c => c.type === 'daily');
+    if (!dailyCase) return;
+    
+    const today = new Date().toDateString();
+    const isAvailable = lastDailyOpen !== today;
+    
+    // Обновляем отображение на карточке ежедневного ящика
+    const container = document.getElementById('casesShop');
+    if (container) {
+        const cards = container.children;
+        for (let card of cards) {
+            const nameDiv = card.querySelector('.case-name');
+            if (nameDiv && nameDiv.innerText === getCaseName(dailyCase)) {
+                const priceDiv = card.querySelector('.case-price');
+                if (priceDiv) {
+                    if (isAvailable) {
+                        priceDiv.innerHTML = `🎁 ${t('free')}`;
+                        priceDiv.style.background = '#2c2c2c';
+                    } else {
+                        const remaining = getTimeRemaining();
+                        priceDiv.innerHTML = `⏱️ ${remaining}`;
+                        priceDiv.style.background = '#555';
+                        priceDiv.style.fontSize = '11px';
+                        priceDiv.style.padding = '4px 6px';
+                    }
+                }
+                break;
+            }
+        }
+    }
 }
 
 function renderCases() {
@@ -436,7 +493,18 @@ function renderCases() {
         
         let priceHtml;
         if (c.price === 0) {
-            priceHtml = `<div class="case-price" style="margin-top: auto;">🎁 0</div>`;
+            if (c.type === 'daily') {
+                const today = new Date().toDateString();
+                const isAvailable = lastDailyOpen !== today;
+                if (isAvailable) {
+                    priceHtml = `<div class="case-price" style="margin-top: auto;">🎁 ${t('free')}</div>`;
+                } else {
+                    const remaining = getTimeRemaining();
+                    priceHtml = `<div class="case-price" style="margin-top: auto; background: #555; font-size: 11px; padding: 4px 6px;">⏱️ ${remaining}</div>`;
+                }
+            } else {
+                priceHtml = `<div class="case-price" style="margin-top: auto;">🎁 0</div>`;
+            }
         } else {
             priceHtml = `<div class="case-price" style="margin-top: auto;">💰 ${c.price}</div>`;
         }
@@ -450,6 +518,19 @@ function renderCases() {
         card.onclick = () => openCaseWithAnimation(c, card);
         container.appendChild(card);
     }
+    
+    // Запускаем таймер, который обновляет отображение каждую секунду
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        const dailyCase = casesDB.find(c => c.type === 'daily');
+        if (dailyCase) {
+            const today = new Date().toDateString();
+            const isAvailable = lastDailyOpen !== today;
+            if (!isAvailable) {
+                updateDailyTimer();
+            }
+        }
+    }, 1000);
 }
 
 function getEmojiForItem(item) {
@@ -518,6 +599,8 @@ function renderInventory() {
         card.className = `item-card rarity-${item.rarity}`;
         if (item.rarity === 'exotic') {
             card.classList.add('exotic-card');
+        } else if (item.rarity === 'secret') {
+            card.classList.add('secret-card');
         }
         card.style.position = 'relative';
         
