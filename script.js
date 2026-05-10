@@ -434,7 +434,7 @@ function updateDailyTimer() {
                 const priceDiv = card.querySelector('.case-price');
                 if (priceDiv) {
                     if (isAvailable) {
-                        priceDiv.innerHTML = `🎁 ${t('free')}`;
+                        priceDiv.innerHTML = `🎁 0`;
                         priceDiv.style.background = '#2c2c2c';
                         priceDiv.style.fontSize = '12px';
                         priceDiv.style.padding = '4px 12px';
@@ -514,7 +514,7 @@ function renderCases() {
         if (c.cooldown) {
             const remaining = getTimeRemaining();
             if (!remaining) {
-                priceHtml = `<div class="case-price" style="margin-top: auto;">🎁 ${t('free')}</div>`;
+                priceHtml = `<div class="case-price" style="margin-top: auto;">🎁 0</div>`;
             } else {
                 priceHtml = `<div class="case-price" style="margin-top: auto; background: #555; font-size: 11px; padding: 4px 6px;">${t('timer', { h: remaining.hours, m: remaining.minutes, s: remaining.seconds })}</div>`;
             }
