@@ -86,12 +86,12 @@ const casesDB = [
         emoji: "📅",
         cooldown: 86400000, // 24 часа в миллисекундах
         items: [
-            { itemId: 8, percent: 30 },
-            { itemId: 9, percent: 25 },
-            { itemId: 10, percent: 20 },
+            { itemId: 8, percent: 27 },
+            { itemId: 9, percent: 23 },
+            { itemId: 10, percent: 17 },
             { itemId: 11, percent: 15 },
-            { itemId: 12, percent: 8 },
-            { itemId: 14, percent: 3 }
+            { itemId: 12, percent: 13 },
+            { itemId: 14, percent: 9 }
         ]
     },
     { 
@@ -120,6 +120,7 @@ const casesDB = [
             { itemId: 6, percent: 20 },
             { itemId: 7, percent: 15 },
             { itemId: 8, percent: 10 },
+            { itemId: 9, percent: 8 },
             { itemId: 9, percent: 8 }
         ]
     },
@@ -130,33 +131,33 @@ const casesDB = [
         price: 350,
         emoji: "📦",
         items: [
-            { itemId: 6, percent: 25 },
-            { itemId: 7, percent: 20 },
+            { itemId: 6, percent: 21 },
+            { itemId: 7, percent: 17 },
             { itemId: 8, percent: 15 },
-            { itemId: 9, percent: 15 },
-            { itemId: 10, percent: 15 },
-            { itemId: 11, percent: 14 }
+            { itemId: 9, percent: 14.5 },
+            { itemId: 10, percent: 14 },
+            { itemId: 12, percent: 10 }
         ]
     },
     { 
         id: 1005,
         nameRu: "Золотой ящик",
         nameEn: "Golden Crate",
-        price: 650,
+        price: 600,
         emoji: "📦",
         items: [
-            { itemId: 9, percent: 30 },
-            { itemId: 11, percent: 20 },
+            { itemId: 9, percent: 26 },
+            { itemId: 11, percent: 17 },
             { itemId: 12, percent: 15 },
             { itemId: 13, percent: 10 },
-            { itemId: 14, percent: 7 }
+            { itemId: 14, percent: 7.5 }
         ]
     },
     { 
         id: 1006,
         nameRu: "Алмазный ящик",
         nameEn: "Diamond Crate",
-        price: 1550,
+        price: 1350,
         emoji: "📦",
         items: [
             { itemId: 12, percent: 30 },
@@ -170,33 +171,21 @@ const casesDB = [
         id: 1007,
         nameRu: "Платиновый ящик",
         nameEn: "Platinum Crate",
-        price: 2550,
+        price: 2250,
         emoji: "📦",
         items: [
             { itemId: 14, percent: 30 },
-            { itemId: 15, percent: 20 },
-            { itemId: 16, percent: 15 },
-            { itemId: 17, percent: 9 },
-            { itemId: 18, percent: 7 }
+            { itemId: 15, percent: 23 },
+            { itemId: 16, percent: 16 },
+            { itemId: 17, percent: 10 },
+            { itemId: 18, percent: 7.5 }
         ]
     },
     { 
         id: 1008,
-        nameRu: "Мемный ящик",
-        nameEn: "Meme Crate",
-        price: 1337,
-        emoji: "📦",
-        items: [
-            { itemId: 11, percent: 35 },
-            { itemId: 16, percent: 17 },
-            { itemId: 18, percent: 5 }
-        ]
-    },
-    { 
-        id: 1009,
         nameRu: "Королевский ящик",
         nameEn: "Royal Crate",
-        price: 4000,
+        price: 3500,
         emoji: "📦",
         items: [
             { itemId: 1, percent: 1 },
@@ -218,42 +207,14 @@ const casesDB = [
             { itemId: 17, percent: 1 },
             { itemId: 18, percent: 1 },
             { itemId: 19, percent: 1 },
-            { itemId: 20, percent: 0.3 }
-        ]
-    },
-    { 
-        id: 1010,
-        nameRu: "Ящик 'Всё или ничего'",
-        nameEn: "All or Nothing Crate",
-        price: 5000,
-        emoji: "📦",
-        items: [
-            { itemId: 1, percent: 97 },
-            { itemId: 20, percent: 3 }
-        ]
-    },
-    { 
-        id: 1011,
-        nameRu: "Ящик 'Релиз'",
-        nameEn: "Release Crate",
-        price: 1000,
-        emoji: "✨",
-        items: [
-            { itemId: 4, percent: 23 },
-            { itemId: 6, percent: 22 },
-            { itemId: 8, percent: 19 },
-            { itemId: 10, percent: 16 },
-            { itemId: 12, percent: 14 },
-            { itemId: 14, percent: 10 },
-            { itemId: 16, percent: 5 },
-            { itemId: 18, percent: 3 },
-            { itemId: 21, percent: 1.5 }
+            { itemId: 21, percent: 0.7 },
+            { itemId: 20, percent: 0.5 }
         ]
     }
 ];
 
 // ========== СОСТОЯНИЕ ==========
-let gameData = { coins: 500, inventory: [], lockedItems: [] };
+let gameData = { coins: 250, inventory: [], lockedItems: [] };
 let resetCount = 0;
 let lastResetDate = "";
 let lastDailyOpen = "";
